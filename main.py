@@ -1,42 +1,22 @@
 from PIL import Image
 
-image = Image.open("monro1.jpg")
-red, green, blue= image.split()
-red.save("красный1.jpg")
-green.save("зеленый1.jpg")
-blue.save("синий1.jpg")
+image = Image.open("monro.jpg")
+(red, green, blue) = image.split()
 
-crp = 100
-
-red1 = Image.open("красный1.jpg")
-coordinates1 = (crp, 0, image.width, image.height)
-red1_cropped = image.crop(coordinates1)
-red1.save("red1_crop.jpg", format="JPEG")
-red2 = Image.open("красный1.jpg")
-coordinates2 = (0.5*crp, 0, 0.5*crp, image.height)
-red2_cropped = image.crop(coordinates2)
-red2.save("red2_crop.jpg",format="JPEG")
-image_red_1 = Image.open("red1_crop.jpg")
-image_red_2 = Image.open("red2_crop.jpg")
-image_red_crop = Image.blend(image_red_1, image_red_2, 0.5)
-image_red_crop.save("image_red_crop.jpg")
+crop_x = 50
+red1 = red.crop((crop_x, 0, image.width, image.height))
+red2 = red.crop((crop_x/2, 0, image.width - crop_x/2, image.height))
+red.smash = Image.blend(red1, red2, 0.5)
 
 
+blue1 = blue.crop((0 ,0 , image.width - crop_x, image.height))
+blue2 = blue.crop((crop_x/2, 0, image.width - crop_x/2, image.height))
+blue.smash = Image.blend(blue1, blue2, 0.5)
 
-# image_green = Image.open("зеленый1.jpg")
-# coordinates = (x / 2, 0, 696 - x / 2 , 522)
-# cropped_green = image_green.crop(coordinates)
-#
-# image_green_red = Image.blend(cropped_red, cropped_green, 0.5)
-# image_green_red.save("красный_зеленый.jpg")
-#
-# image_blue = Image.open("синий.jpg")
-# coordinates = (0, 0, 696-2*crop, 522)
-# cropped_blue = image_blue.crop(coordinates)
-#
-# image_green_red = Image.open("красный_зеленый.jpg")
-# coordinates = (crop/2, 0, 656 - crop/2, 522)
-# cropped_green_red = image_green_red.crop(coordinates)
-# print(cropped_green_red.size)
-# image_green_red_blue = Image.blend(cropped_blue, cropped_green_red, 0.5)
-# image_green_red_blue.save("красный_зеленый_синий.jpg")
+green1 = green.crop((crop_x/2, 0, image.width - crop_x/2, 522))
+
+new_image = Image.merge("RGB", (red.smash, green1, blue.smash))
+new_image.thumbnail((80, 80))
+
+new_image.save("avatar.jpg")
+
